@@ -62,12 +62,27 @@ try
     //Create collection "BookStore" or retrieve if exists
     var collection = mongoDb.GetCollection<BookStore>("BookStore");
 
-    //Insert books to the "BookStore" collection one by one
+    //Insert books to the "BookStore" collection with existence check
+    int insertedCount = 0;
+    int skippedCount = 0;
+    
     foreach (BookStore bookStore in bookStores)
     {
-        collection.InsertOne(bookStore);
+        var existingBook = collection.Find(b => b.ISBN == bookStore.ISBN).FirstOrDefault();
+        if (existingBook == null)
+        {
+            collection.InsertOne(bookStore);
+            insertedCount++;
+            Console.WriteLine($"Inserted: {bookStore.BookTitle}");
+        }
+        else
+        {
+            skippedCount++;
+            Console.WriteLine($"Skipped (already exists): {bookStore.BookTitle}");
+        }
     }
-    Console.WriteLine("Books added, check your new book collection!");
+    
+    Console.WriteLine($"\nSummary: {insertedCount} books inserted, {skippedCount} books skipped.");
     Console.ReadLine();
 
     //Query data
@@ -83,6 +98,7 @@ try
     Console.WriteLine("\nBook with ISBN number 6779799933389898yu is => " +
         bookWithISBN.BookTitle);
     Console.ReadLine();
+
     // mongoDb.DropCollection("BookStore");
     // Console.ReadLine();
 }
