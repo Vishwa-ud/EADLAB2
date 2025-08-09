@@ -2,10 +2,15 @@
 using EAD_MongoLab_Library;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using DotNetEnv;
+
+// Load environment variables from .env file
+Env.Load();
 
 //Establish mongoDB connection
-const string connectionUri =
-    "mongodb+srv://user-123:user-123@cluster0.txulbhx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+var connectionUri = Environment.GetEnvironmentVariable("MONGODB_CONNECTION_URI") 
+    ?? throw new InvalidOperationException("MONGODB_CONNECTION_URI environment variable is not set");
+
 var settings = MongoClientSettings.FromConnectionString(connectionUri);
 // Set the ServerApi field of the settings object to set the version of the Stable API on the client
 settings.ServerApi = new ServerApi(ServerApiVersion.V1);

@@ -388,8 +388,11 @@ $RECYCLE.BIN/
 appsettings.local.json
 appsettings.secrets.json
 
-# Environment variables
+# Environment variables - NEVER commit these files
 .env
+.env.*
 .env.local
 .env.development
 .env.production
+.env.staging
+.env.test
